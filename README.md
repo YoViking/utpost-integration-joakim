@@ -1,5 +1,7 @@
 # Utpost
 
+AssertionError: expected 51 to be less than or equal to 2
+
 Plattform för friluftsdestinationer. Redaktionella guider, användarnas egna turer och bilder.
 
 ## Kom igång
@@ -13,7 +15,7 @@ docker compose up --build -d          # postgres, mongo, api och client (nginx p
 docker compose exec api npm run seed  # första gången: testdata i Postgres
 ```
 
-Allt nås genom klientens nginx: http://localhost:3001 · http://localhost:3001/api/health (ska svara `"postgres":"ok","mongodb":"ok"`) · http://localhost:3001/graphql (GraphiQL). API:ets egen port är inte publicerad.
+Allt nås genom klientens nginx: <http://localhost:3001> · <http://localhost:3001/api/health> (ska svara `"postgres":"ok","mongodb":"ok"`) · <http://localhost:3001/graphql> (GraphiQL). API:ets egen port är inte publicerad.
 Logga in med valfri seedad användare, lösenord `hemligt123` (e-postadresserna syns i `docker compose exec postgres psql -U utpost -c 'select email from users'`).
 
 Stoppa med `docker compose down`. Lägg till `-v` för att även kasta databasernas data.
@@ -33,7 +35,7 @@ npm run dev:client                    # Vue-klienten på :3001 med hot reload, /
 
 ## Struktur
 
-- `api/` – Express + Postgres (Drizzle) + MongoDB (driver). REST under `/api`, GraphQL på `/graphql` (`api/src/graphql/`, GraphiQL i browsern på http://localhost:4000/graphql). Relationerna hämtas med DataLoader (`loaders.js`, M5) – en databasfråga per lista, inte per rad; varje svar säger vad det kostade i `extensions.databasfragor`. Turernas mätpunkter ligger i MongoDB sedan M5 (`npm run migrate:logs`). Kräver Node 22.18+ (routes skrivs i TypeScript och körs direkt av Node). `api/Dockerfile` byggs från repots rot.
+- `api/` – Express + Postgres (Drizzle) + MongoDB (driver). REST under `/api`, GraphQL på `/graphql` (`api/src/graphql/`, GraphiQL i browsern på <http://localhost:4000/graphql>). Relationerna hämtas med DataLoader (`loaders.js`, M5) – en databasfråga per lista, inte per rad; varje svar säger vad det kostade i `extensions.databasfragor`. Turernas mätpunkter ligger i MongoDB sedan M5 (`npm run migrate:logs`). Kräver Node 22.18+ (routes skrivs i TypeScript och körs direkt av Node). `api/Dockerfile` byggs från repots rot.
 - `client/` – ny klient i Vue 3 + TypeScript (port 3001). GraphQL med urql (`src/urql.ts`, cache i klienten) och typer genererade ur schemat (`codegen.ts` → `src/gql/`, M5). `client/Dockerfile` är multi-stage: Node bygger, nginx serverar (`client/nginx.conf`).
 - `shared/` – API-kontraktet som TypeScript-typer (`@utpost/shared`), används av `api/` och `client/`.
 - `web/` – den gamla React-klienten. Portas vy för vy till `client/`, tas bort i M6.
